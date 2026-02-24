@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeadEnd Engineers | Story</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Imports from video_scroll_demo.html -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;500&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+
+    <!-- Imports from story_scroll.html -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- GLOBAL & FONTS --- */
+        body {
+            /* Default to Inter for the story flow, but can use Mono for hero if needed */
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #111111;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .font-heading {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* --- HERO SECTION (COPIED EXACTLY FROM DEMO) --- */
+        .scroll-track {
+            height: 250vh;
+            position: relative;
+            background-color: #ffffff;
+        }
+
+        .sticky-frame {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .transform-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            will-change: width, height, border-radius;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-track {
+            background-color: #ffffff;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- HERO HUD --- */
+        .hero-hud {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 30;
+            pointer-events: none;
+            padding: 2rem;
+            box-sizing: border-box;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .hud-corner {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .hud-tl {
+            top: 2rem;
+            left: 2rem;
+        }
+
+        .hud-tr {
+            top: 2rem;
+            right: 2rem;
+        }
+
+        .hud-bl {
+            bottom: 2rem;
+            left: 2rem;
+        }
+
+        .hud-br {
+            bottom: 2rem;
+            right: 2rem;
+        }
+
+        .rec-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ff6600;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ff6600;
+            animation: pulse-rec 2s infinite;
+        }
+
+        @keyframes pulse-rec {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .corner-bracket {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .cb-tl {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .cb-tr {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .cb-bl {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+        }
+
+        .cb-br {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, #ff6600, transparent);
+            animation: scroll-drop 2s infinite;
+        }
+
+        @keyframes scroll-drop {
+            0% {
+                transform: scaleY(0);
+                transform-origin: top;
+                opacity: 0;
+            }
+
+            50% {
+                transform: scaleY(1);
+                transform-origin: top;
+                opacity: 1;
+            }
+
+            51% {
+                transform: scaleY(1);
+                transform-origin: bottom;
+                opacity: 1;
+            }
+
+            100% {
+                transform: scaleY(0);
+                transform-origin: bottom;
+                opacity: 0;
+            }
+        }
+
+        /* --- STORY SECTIONS --- */
+        .story-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 8rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- PROJECTS --- */
+        .project-item {
+            border-top: 1px solid #e5e5e5;
+            transition: background-color 0.3s ease;
+        }
+
+        .project-item:last-child {
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .project-item:hover {
+            background-color: #fafafa;
+        }
+
+        .project-item:hover .project-arrow {
+            transform: translateX(5px) rotate(-45deg);
+            opacity: 1;
+        }
+
+        .project-arrow {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0.5;
+        }
+
+        /* --- TEAM / PEEPS --- */
+        .team-section {
+            padding: 10rem 2rem;
+            background: #f8f8f8;
+        }
+
+        .team-container {
+            position: relative;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+
+        .team-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .team-container:hover .team-image {
+            transform: scale(1.02);
+        }
+
+        .hover-block {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            z-index: 10;
+        }
+
+        .hover-block:hover {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .peep-tooltip {
+            position: absolute;
+            background: #000;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.2s ease;
+            z-index: 50;
+            white-space: nowrap;
+        }
+
+        .peep-tooltip.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- FOOTER --- */
+        .footer-section {
+            background: #fff;
+            padding: 6rem 0 2rem 0;
+            border-top: 1px solid #111;
+            overflow: hidden;
+        }
+
+        .footer-logo {
+            font-size: 15vw;
+            /* Massive */
+            line-height: 0.8;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.05em;
+            white-space: nowrap;
+            color: #111;
+            display: block;
+            width: 100%;
+            margin-bottom: -1vw;
+            /* Tight fit */
+        }
+
+        /* --- UTILS --- */
+        .stagger-1 {
+            transition-delay: 0.1s;
+        }
+
+        .stagger-2 {
+            transition-delay: 0.2s;
+        }
+
+        /* --- TRADING CARD BADGES --- */
+        /* --- TRADING CARD BADGES --- */
+        /* --- TRADING CARD BADGES (MEGA SIZE) --- */
+        .trading-card {
+            width: 180px;
+            height: 260px;
+            background: #f8f8f8;
+            border: 1px solid #000;
+            position: relative;
+            /* Sci-Fi Cut Corners */
+            clip-path: polygon(20px 0, 100% 0,
+                    100% calc(100% - 20px), calc(100% - 20px) 100%,
+                    0 100%, 0 20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            margin-right: 2rem;
+            flex-shrink: 0;
+            border-left: 4px solid #ff6600;
+            /* Orange Accent */
+        }
+
+        /* Inner decorative border line */
+        .trading-card::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            clip-path: polygon(8px 0, 100% 0,
+                    100% calc(100% - 8px), calc(100% - 8px) 100%,
+                    0 100%, 0 8px);
+            pointer-events: none;
+        }
+
+        .project-card:hover .trading-card {
+            filter: drop-shadow(0 15px 30px rgba(255, 102, 0, 0.2));
+            /* Orange Glow */
+            transform: translateY(-5px) rotateX(5deg) rotateY(5deg);
+            background-color: #fff;
+            border-color: #ff6600;
+        }
+
+        /* --- STACKED CARD STYLES --- */
+        .project-card {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            /* Full Screen */
+            background: #fff;
+            border-top: 1px solid #111;
+            box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.1);
+            margin-bottom: 0;
+            padding: 4rem 6rem;
+            /* More padding */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* Center content */
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .tag-pill {
+            display: inline-block;
+            padding: 4px 12px;
+            border: 1px solid #ddd;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            margin-right: 8px;
+            color: #666;
+        }
+
+        .github-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #000;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .github-btn:hover {
+            background: #ff6600;
+            color: #000;
+        }
+
+        .tc-header {
+            font-size: 8px;
+            font-weight: 900;
+            text-transform: uppercase;
+            border-bottom: 2px solid #000;
+            padding-bottom: 3px;
+            display: flex;
+            justify-content: space-between;
+            line-height: 1;
+        }
+
+        .tc-visual {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+        }
+
+        .tc-icon {
+            width: 28px;
+            height: 28px;
+            fill: #000;
+        }
+
+        .tc-footer {
+            font-size: 7px;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #000;
+            padding-top: 3px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        /* --- BIO AVATAR --- */
+        .bio-avatar-wrapper {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .bio-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            /* Circle */
+            object-fit: cover;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: #f0f0f0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- POP-OUT IMAGES --- */
+        #popout-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .popout-img {
+            position: absolute;
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* Bouncy pop */
+            width: 120px;
+            /* Fixed smaller size */
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            /* Circle */
+            filter: grayscale(100%) contrast(1.1) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+            will-change: transform, opacity;
+            border: 2px solid #fff;
+        }
+
+        .popout-img.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.1);
+            /* Subtle pop */
+            z-index: 30;
+            border-color: #ff6600;
+            /* Orange accent */
+        }
+
+        /* --- FOOTER ANIMATION STYLES (From index11.html) --- */
+        .massive-bg-text {
+            font-family: 'Instrument Serif', serif;
+            font-size: 25vw;
+            font-style: italic;
+            color: rgba(0, 0, 0, 0.05);
+            line-height: 0.8;
+            letter-spacing: -0.05em;
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+            /* Fade to bottom effect */
+            mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+        }
+
+        .parade-track {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            /* border-top: 1px solid rgba(255, 255, 255, 0.05); */
+            /* background: linear-gradient(to bottom, rgba(0, 255, 136, 0.02) 0%, transparent 100%); */
+            overflow: hidden;
+        }
+
+        .parade-group {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            align-items: flex-end;
+            gap: 60px;
+        }
+
+        .engineer-svg {
+            width: 80px;
+            height: 120px;
+            filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.1));
+            animation: walk-bob 0.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes walk-bob {
+            0% {
+                transform: translateY(0) rotate(-2deg);
+            }
+
+            100% {
+                transform: translateY(-8px) rotate(2deg);
+            }
+        }
+
+        .group-1 {
+            animation-delay: 0.1s;
+        }
+
+        .group-2 {
+            animation-delay: 0.3s;
+        }
+
+        .group-3 {
+            animation-delay: 0.0s;
+        }
+
+        .group-4 {
+            animation-delay: 0.4s;
+        }
+
+        .group-5 {
+            animation-delay: 0.2s;
+        }
+
+        .banner-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .curtain-pole {
+            width: 4px;
+            height: 100px;
+            background: #222;
+            border-radius: 2px;
+            margin-right: -2px;
+        }
+
+        .banner-curtain {
+            background: #000;
+            color: #fff;
+            padding: 15px 30px;
+            font-weight: 900;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            box-shadow: 10px 10px 0px #ff6600;
+            transform-origin: left center;
+            animation: wave 2s ease-in-out infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes wave {
+
+            0%,
+            100% {
+                transform: rotate(0deg) skewY(0deg);
+            }
+
+            50% {
+                transform: rotate(-2deg) skewY(1deg);
+            }
+        }
+
+        /* --- STICKY HERO TEXT --- */
+        .hero-sticky-text {
+            position: absolute;
+            bottom: 3rem;
+            z-index: 5;
+            /* removed opacity: 0 and transform from base */
+            pointer-events: none;
+        }
+
+        .hero-sticky-text.left {
+            left: 3rem;
+            max-width: 400px;
+            /* Always visible */
+            opacity: 1;
+            transform: none;
+        }
+
+        .hero-sticky-text.right {
+            right: 3rem;
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #888;
+            /* Hidden initially */
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.1s linear;
+        }
+
+        .hero-ethos-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            line-height: 1.1;
+            font-weight: 500;
+            color: #111;
+        }
+
+        .hero-ethos-highlight {
+            color: #ff6600;
+        }
+
+        /* --- GLASS NAVBAR --- */
+        .glass-nav {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 420px;
+            /* Compact pill */
+            height: 54px;
+            background: rgba(20, 20, 20, 0.6);
+            /* Dark glass */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6px 0 24px;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .glass-nav:hover {
+            background: rgba(20, 20, 20, 0.85);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateX(-50%) translateY(-2px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.05em;
+            font-size: 1.1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+        }
+
+        .nav-cta {
+            background: #ff6600;
+            color: #000;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 10px 20px;
+            border-radius: 100px;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-cta:hover {
+            background: #ff8533;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- FLOATING GLASS NAVBAR -->
+    <nav class="glass-nav">
+        <div class="nav-logo">DE.</div>
+        <div class="nav-links hidden md:flex">
+            <a href="#hero-track">Index</a>
+            <a href="#projects">Works</a> <!-- Added ID to projects section needed later? -->
+            <a href="#footer">Contact</a>
+        </div>
+        <a href="mailto:hello@deadend.io" class="nav-cta">
+            Let's Talk
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+        </a>
+    </nav>
+
+    <!-- 1. HERO SCROLL TRACK (COPIED EXACTLY) -->
+    <section class="scroll-track hero-track" id="hero-track" style="height: 550vh;">
+        <div class="sticky-frame">
+            <div class="transform-container" id="hero-container">
+                <video autoplay loop muted playsinline>
+                    <source src="bgsample.mp4" type="video/mp4">
+                    <div class="w-full h-full bg-black"></div>
+                </video>
+                <div class="hero-hud">
+                    <!-- Top Corners -->
+                    <div class="hud-corner hud-tl">
+                        <div class="corner-bracket cb-tl"></div>
+                        <span>DEADEND.IO // v2.0</span>
+                    </div>
+                    <div class="hud-corner hud-tr">
+                        <div class="corner-bracket cb-tr"></div>
+                        <div class="rec-dot"></div>
+                        <span>REC</span>
+                    </div>
+
+                    <!-- Bottom Corners -->
+                    <div class="hud-corner hud-bl">
+                        <div class="corner-bracket cb-bl"></div>
+                        <span>SYS.READY</span>
+                    </div>
+                    <div class="hud-corner hud-br flex-col gap-2">
+                        <div class="scroll-line"></div>
+                        <span>SCROLL</span>
+                        <div class="corner-bracket cb-br"></div>
+                    </div>
+                </div>
+
+                <div
+                    class="absolute inset-0 flex flex-col items-center justify-center bg-black/20 z-20 pointer-events-none">
+                    <!-- Title Removed per request -->
+                </div>
+            </div>
+
+            <!-- STICKY TEXT LAYERS (Outside transform container to stay fixed relative to frame) -->
+            <div class="hero-sticky-text left" id="hero-left-text">
+                <h2 class="hero-ethos-title">
+                    We don't wait for opportunities.<br>
+                    <span class="hero-ethos-highlight">We build them.</span>
+                </h2>
+            </div>
+
+            <div class="hero-sticky-text right" id="hero-right-text">
+                <div class="flex flex-col gap-1">
+                    <strong class="text-black uppercase tracking-widest">Engineering<br>The Eternal</strong>
+                    <span>EST. 2024 // BLR</span>
+                    <span class="text-[#ff6600]">A-SERIES // 001</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. NARRATIVE SECTION (REMOVED - INTEGRATED INTO HERO) -->
+    <!-- <section class="story-section"> ... </section> -->
+    <div style="height: 10vh;"></div>
+
+    <!-- 3. PROJECTS SECTION -->
+    <section class="py-32">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="flex items-end justify-between mb-20">
+                <h3
+                    class="text-8xl md:text-9xl font-bold tracking-tighter opacity-5 select-none absolute left-0 -translate-y-1/2 pointer-events-none">
+                    WORKS</h3>
+                <div class="ml-auto flex gap-4 text-xs font-bold uppercase tracking-widest">
+                    <span>Index</span>
+                    <span>01 — 03</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col relative">
+                <!-- 01 -->
+                <div class="project-card group">
+                    <div class="flex flex-col md:flex-row gap-8 justify-between items-center h-full">
+                        <div class="flex gap-12 items-center">
+                            <!-- Trading Card Badge -->
+                            <div class="trading-card">
+                                <div class="flex justify-between items-start text-[10px] text-gray-500 mb-4">
+                                    <span class="border border-black px-1">LVL.01</span>
+                                    <span>CLASS: A-1</span>
+                                </div>
+                                <div class="flex-grow flex items-center justify-center py-4">
+                                    <!-- Browser Icon -->
+                                    <svg class="w-16 h-16 text-gray-800" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M3 3h18v18H3V3zm16 16V5H5v14h14zM7 7h10v2H7V7zm0 4h10v2H7v-2z" />
+                                    </svg>
+                                </div>
+                                <div class="mt-auto">
+                                    <div class="text-[10px] uppercase tracking-widest text-[#ff6600] mb-1">Status:
+                                        Active</div>
+                                    <div class="h-1 w-full bg-gray-200 mb-2 overflow-hidden">
+                                        <div class="h-full bg-[#ff6600] w-[85%]"></div>
+                                    </div>
+                                    <div class="flex justify-between text-[10px] font-bold">
+                                        <span>744.92.1</span>
+                                        <span>SYS-WEB</span>
+                                    </div>
+                                    <!-- Decorative Barcode -->
+                                    <div class="flex gap-[2px] h-3 mt-2 opacity-50">
+                                        <div class="w-[2px] bg-black"></div>
+                                        <div class="w-[1px] bg-black"></div>
+                                        <div class="w-[3px] bg-black"></div>
+                                        <div class="w-[1px] bg-black"></div>
+                                        <div class="w-[4px] bg-black"></div>
+                                        <div class="w-[2px] bg-black"></div>
+                                        <div class="w-[1px] bg-black"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <span class="text-xs font-mono text-[#ff6600] mb-2 tracking-widest">01 / PUBLIC
+                                    RELEASE</span>
+                                <h4 class="text-6xl md:text-8xl font-medium mb-6 tracking-tighter">DevMe</h4>
+                                <p class="max-w-xl text-lg text-gray-600 mb-8 leading-relaxed">
+                                    A high-performance browser interface for developers.
+                                    Integrates local environments with cloud-based AI tools in a unified workspace.
+                                    Reducing context switching by 40%.
+                                </p>
+                                <div class="flex flex-wrap gap-3 mb-8">
+                                    <span class="tag-pill">Rust</span>
+                                    <span class="tag-pill">WebAssembly</span>
+                                    <span class="tag-pill">WebGL</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rotate-90 origin-right translate-x-12 hidden md:block">
+                            <a href="#" class="github-btn whitespace-nowrap">
+                                View Case Study &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 02 -->
+                <div class="project-card group">
+                    <div class="flex flex-col md:flex-row gap-8 justify-between items-center h-full">
+                        <div class="flex gap-12 items-center">
+                            <!-- Trading Card Badge -->
+                            <div class="trading-card">
+                                <div class="flex justify-between items-start text-[10px] text-gray-500 mb-4">
+                                    <span class="border border-black px-1">LVL.02</span>
+                                    <span>CLASS: B-X</span>
+                                </div>
+                                <div class="flex-grow flex items-center justify-center py-4">
+                                    <!-- Brain Icon -->
+                                    <svg class="w-16 h-16 text-gray-800" viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 18a8 8 0 118-8 8 8 0 01-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+                                    </svg>
+                                </div>
+                                <div class="mt-auto">
+                                    <div class="text-[10px] uppercase tracking-widest text-[#ff6600] mb-1">Status:
+                                        Scaling</div>
+                                    <div class="h-1 w-full bg-gray-200 mb-2 overflow-hidden">
+                                        <div class="h-full bg-[#ff6600] w-[99%]"></div>
+                                    </div>
+                                    <div class="flex justify-between text-[10px] font-bold">
+                                        <span>921.00.4</span>
+                                        <span>SYS-LLM</span>
+                                    </div>
+                                    <!-- Decorative Barcode -->
+                                    <div class="flex gap-[2px] h-3 mt-2 opacity-50">
+                                        <div class="w-[3px] bg-black"></div>
+                                        <div class="w-[1px] bg-black"></div>
+                                        <div class="w-[1px] bg-black"></div>
+                                        <div class="w-[4px] bg-black"></div>
+                                        <div class="w-[2px] bg-black"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <span class="text-xs font-mono text-[#ff6600] mb-2 tracking-widest">02 /
+                                    INFRASTRUCTURE</span>
+                                <h4 class="text-6xl md:text-8xl font-medium mb-6 tracking-tighter">Parallax AI</h4>
+                                <p class="max-w-xl text-lg text-gray-600 mb-8 leading-relaxed">
+                                    Scalable infrastructure for Large Language Models.
+                                    Optimized for low-latency inference on edge devices.
+                                    Currently powering over 10k daily autonomous agents.
+                                </p>
+                                <div class="flex flex-wrap gap-3 mb-8">
+                                    <span class="tag-pill">Python</span>
+                                    <span class="tag-pill">PyTorch</span>
+                                    <span class="tag-pill">CUDA</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rotate-90 origin-right translate-x-12 hidden md:block">
+                            <a href="#" class="github-btn whitespace-nowrap">
+                                View Architecture &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 03 -->
+                <div class="project-card group">
+                    <div class="flex flex-col md:flex-row gap-8 justify-between items-center h-full">
+                        <div class="flex gap-12 items-center">
+                            <!-- Trading Card Badge -->
+                            <div class="trading-card">
+                                <div class="flex justify-between items-start text-[10px] text-gray-500 mb-4">
+                                    <span class="border border-black px-1">LVL.03</span>
+                                    <span>CLASS: C-9</span>
+                                </div>
+                                <div class="flex-grow flex items-center justify-center py-4">
+                                    <!-- Eye Icon -->
+                                    <svg class="w-16 h-16 text-gray-800" viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                                    </svg>
+                                </div>
+                                <div class="mt-auto">
+                                    <div class="text-[10px] uppercase tracking-widest text-[#ff6600] mb-1">Status: R&D
+                                    </div>
+                                    <div class="h-1 w-full bg-gray-200 mb-2 overflow-hidden">
+                                        <div class="h-full bg-[#ff6600] w-[42%]"></div>
+                                    </div>
+                                    <div class="flex justify-between text-[10px] font-bold">
+                                        <span>004.12.X</span>
+                                        <span>SYS-VIS</span>
+                                    </div>
+                                    <!-- Decorative Barcode -->
+                                    <div class="flex gap-[2px] h-3 mt-2 opacity-50">
+                                        <div class="w-[1px] bg-black"></div>
+                                        <div class="w-[2px] bg-black"></div>
+                                        <div class="w-[1px] bg-black"></div>
+                                        <div class="w-[3px] bg-black"></div>
+                                        <div class="w-[1px] bg-black"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <span class="text-xs font-mono text-[#ff6600] mb-2 tracking-widest">03 /
+                                    EXPERIMENTAL</span>
+                                <h4 class="text-6xl md:text-8xl font-medium mb-6 tracking-tighter">Clarify</h4>
+
+                                <p class="max-w-md text-gray-600 mb-6 leading-relaxed">
+                                    Visual thinking tools for complex system design.
+                                    Automatically generates interactive diagrams from codebase analysis.
+                                    "Map your mind, not just your code."
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-8">
+                                    <span class="tag-pill">TypeScript</span>
+                                    <span class="tag-pill">D3.js</span>
+                                    <span class="tag-pill">Graph DB</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col items-end">
+                            <span class="text-sm text-gray-500 uppercase tracking-wider hidden md:block mb-4">Visual
+                                Thinking</span>
+                            <a href="#" class="github-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                                </svg>
+                                View Source
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. TEAM / PEEPS SECTION -->
+    <!-- 5. TEAM SCROLL ZOOM TRACK -->
+    <!-- 5. TEAM SCROLL ZOOM TRACK -->
+    <section class="scroll-track" id="team-track" style="height: 800vh;">
+        <div class="sticky-frame">
+            <div class="w-full h-full relative overflow-hidden bg-white" id="team-viewport">
+
+                <!-- The Image Layer -->
+                <div id="team-camera"
+                    style="width: 100%; height: 100%; will-change: transform; transform-origin: 0 0; transition: transform 0.1s linear;">
+                    <div class="w-full h-full relative">
+                        <img src="team1.svg" alt="DeadEnd Team" class="w-full h-full object-cover"
+                            style="object-position: center 20%;">
+
+                        <!-- Pop-out Image Layer -->
+                        <div id="popout-layer"></div>
+                    </div>
+                </div>
+
+                <!-- Overlay Gradient/Vignette -->
+                <div class="absolute inset-0 pointer-events-none transition-opacity duration-700 opacity-0"
+                    id="vignette"
+                    style="background: radial-gradient(circle at center, transparent 40%, rgba(255,255,255,0.95) 90%);">
+                </div>
+
+                <!-- Bio Card (Technical Design) -->
+                <div class="absolute bottom-10 left-6 md:left-20 md:bottom-20 z-30 pointer-events-none">
+                    <div id="bio-container"
+                        class="opacity-0 translate-y-4 transition-all duration-700 ease-out w-64 min-h-[320px] bg-white/95 backdrop-blur-sm border border-gray-200 shadow-lg relative rounded-none flex flex-col justify-end p-6">
+
+                        <!-- Corner Decorations -->
+                        <div class="absolute top-0 left-0 -mt-1.5 -ml-1.5 text-gray-400 text-xs leading-none">+</div>
+                        <div class="absolute top-0 right-0 -mt-1.5 -mr-1.5 text-gray-400 text-xs leading-none">+</div>
+                        <div class="absolute bottom-0 left-0 -mb-1.5 -ml-1.5 text-gray-400 text-xs leading-none">+</div>
+                        <div class="absolute bottom-0 right-0 -mb-1.5 -mr-1.5 text-gray-400 text-xs leading-none">+
+                        </div>
+
+                        <div class="w-8 h-0.5 bg-black mb-auto"></div> <!-- Top accent -->
+
+                        <!-- Bio Avatar Removed -->
+
+                        <div class="mb-4">
+                            <h3 class="text-[10px] font-mono uppercase tracking-widest text-gray-500 mb-1"
+                                id="bio-role">Role</h3>
+                            <h2 class="text-2xl font-bold text-black leading-tight font-heading" id="bio-name">Name</h2>
+                        </div>
+
+                        <div class="border-t border-gray-100 pt-4">
+                            <p class="text-xs text-gray-600 leading-relaxed font-mono">
+                                // CORE SYSTEMS<br>
+                                Optimizing architecture for scale and reducing latency.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. FOOTER (Redesigned with Animation) -->
+    <footer id="footer" class="relative pt-20 border-t border-gray-200 bg-white overflow-hidden">
+
+        <!-- Massive Text Background -->
+        <div class="absolute top-0 left-0 w-full overflow-hidden pointer-events-none">
+            <div class="massive-bg-text">DeadEnd.</div>
+        </div>
+
+        <!-- Parade Animation Track -->
+        <div class="parade-track mt-10 relative z-10">
+            <div class="parade-group" id="parade-group">
+                <!-- Stick Man Black/Orange Combo -->
+                <div class="group-1"><svg class="engineer-svg" viewBox="0 0 100 150">
+                        <circle cx="50" cy="40" r="18" fill="black" />
+                        <circle cx="50" cy="18" r="10" fill="#ff6600" />
+                        <!-- Bun -->
+                        <path d="M50 60 L50 110 M50 70 L30 95 M50 70 L70 95 M50 110 L35 140 M50 110 L65 140"
+                            stroke="black" stroke-width="6" stroke-linecap="round" />
+                    </svg></div>
+                <div class="group-2"><svg class="engineer-svg" viewBox="0 0 100 150">
+                        <rect x="32" y="15" width="36" height="35" rx="2" fill="black" />
+                        <circle cx="50" cy="45" r="18" fill="black" />
+                        <path d="M50 65 L50 115 M50 75 L30 100 M50 75 L70 100 M50 115 L35 145 M50 115 L65 145"
+                            stroke="#ff6600" stroke-width="6" stroke-linecap="round" />
+                    </svg></div>
+                <div class="group-3"><svg class="engineer-svg" viewBox="0 0 100 150">
+                        <path d="M35 25 L40 10 L45 25 L50 10 L55 25 L60 10 L65 25" fill="none" stroke="#ff6600"
+                            stroke-width="4" />
+                        <circle cx="50" cy="40" r="18" fill="black" />
+                        <path d="M50 60 L50 110 M50 70 L30 95 M50 70 L70 95 M50 110 L35 140 M50 110 L65 140"
+                            stroke="black" stroke-width="6" stroke-linecap="round" />
+                    </svg></div>
+                <div class="group-4"><svg class="engineer-svg" viewBox="0 0 100 150">
+                        <circle cx="50" cy="35" r="28" fill="black" />
+                        <!-- Afro -->
+                        <path d="M35 50 Q50 65 65 50" fill="none" class="stroke-[#ff6600]" stroke="#ff6600"
+                            stroke-width="4" />
+                        <!-- Beard area silhouette -->
+                        <path d="M50 65 L50 115 M50 75 L30 100 M50 75 L70 100 M50 115 L35 145 M50 115 L65 145"
+                            stroke="black" stroke-width="6" stroke-linecap="round" />
+                    </svg></div>
+                <div class="group-5 banner-container"><svg class="engineer-svg" viewBox="0 0 100 150">
+                        <circle cx="50" cy="40" r="18" fill="black" />
+                        <path d="M50 60 L50 110 M50 70 L30 95 M50 70 L85 60 M50 110 L35 140 M50 110 L65 140"
+                            stroke="#ff6600" stroke-width="6" stroke-linecap="round" />
+                    </svg>
+                    <div class="curtain-pole"></div>
+                    <div class="banner-curtain">DEADEND ENGINEERS </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-[1400px] mx-auto px-6 mb-12 grid grid-cols-1 md:grid-cols-2 gap-12 relative z-30">
+            <div>
+                <h5 class="text-sm font-bold uppercase tracking-widest mb-6 text-gray-500">Contact</h5>
+                <a href="mailto:hello@deadend.io"
+                    class="text-2xl md:text-3xl text-black hover:text-gray-500 transition-colors">hello@deadend.io</a>
+            </div>
+            <div class="flex flex-col justify-end items-start md:items-end">
+                <div class="flex gap-8 text-xs font-bold uppercase tracking-widest text-gray-500">
+                    <a href="#" class="hover:text-black hover:underline transition-colors">Twitter</a>
+                    <a href="#" class="hover:text-black hover:underline transition-colors">LinkedIn</a>
+                    <a href="#" class="hover:text-black hover:underline transition-colors">GitHub</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full text-center py-4 border-t border-gray-200">
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest">© 2026 DeadEnd Engineers</p>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- HERO SCROLL ANIMATION (BANNER MODE) ---
+            const setupScrollAnimation = (trackId, containerId, config = {}) => {
+                const track = document.getElementById(trackId);
+                const container = document.getElementById(containerId);
+                const heroText = document.getElementById('hero-text');
+                const leftText = document.getElementById('hero-left-text');
+                const rightText = document.getElementById('hero-right-text');
+
+                if (!track || !container) return;
+
+                const onScroll = () => {
+                    const rect = track.getBoundingClientRect();
+                    const viewHeight = window.innerHeight;
+                    const trackHeight = track.offsetHeight;
+
+                    let distance = -rect.top;
+                    const maxDistance = trackHeight - viewHeight;
+
+                    let progress = Math.min(Math.max(distance / maxDistance, 0), 1);
+
+                    // Map progress 0 -> 0.8 (Animation Phase) to 0 -> 1 (Animation Progress)
+                    // This creates a "static pause" from 0.8 -> 1.0
+                    let animProgress = progress / 0.8;
+                    animProgress = Math.min(Math.max(animProgress, 0), 1);
+
+                    const settings = {
+                        startWidth: 100, endWidth: 96,
+                        startHeight: 100, endHeight: 40,
+                        startRadius: 0, endRadius: 20,
+                        startY: 0, endY: -15, // Move UP 15%
+                        ...config
+                    };
+
+                    const currentWidth = settings.startWidth - (animProgress * (settings.startWidth - settings.endWidth));
+                    const currentHeight = settings.startHeight - (animProgress * (settings.startHeight - settings.endHeight));
+                    const currentRadius = settings.startRadius + (animProgress * (settings.endRadius - settings.startRadius));
+                    const currentY = settings.startY + (animProgress * (settings.endY - settings.startY));
+
+                    container.style.width = `${currentWidth}%`;
+                    container.style.height = `${currentHeight}%`;
+                    container.style.borderRadius = `${currentRadius}px`;
+
+                    // Apply Y Translation to move it close to Navbar
+                    container.style.transform = `translateY(${currentY}vh)`;
+                    // Note: original transform is centered (-50, -50), so we append translateY
+
+
+                    // 2. Fade IN Sticky Text (Right Only, Left is Persistent)
+                    if (rightText) {
+                        let textProgress = 0;
+                        // Start fading in slightly later in the animation phase
+                        if (animProgress > 0.5) {
+                            textProgress = (animProgress - 0.5) / 0.5; // 0.5 -> 1.0 mapped to 0 -> 1
+                            textProgress = Math.min(Math.max(textProgress, 0), 1);
+                        }
+
+                        // Ease
+                        const ease = t => t * (2 - t);
+                        const fade = ease(textProgress);
+
+                        // Left text is already visible via CSS
+                        rightText.style.opacity = fade;
+
+                        const translate = 20 - (fade * 20); // 20px -> 0px
+                        rightText.style.transform = `translateY(${translate}px)`;
+                    }
+                };
+
+                window.addEventListener('scroll', onScroll);
+                onScroll();
+            };
+
+            // Init Hero Animation
+            setupScrollAnimation('hero-track', 'hero-container', {
+                startWidth: 100, endWidth: 96,
+                startHeight: 100, endHeight: 40,
+                startRadius: 0, endRadius: 20
+            });
+
+
+            // --- REVEAL ON SCROLL ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+            document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
+
+
+            // --- TEAM SCROLL ZOOM LOGIC ---
+            const teamTrack = document.getElementById('team-track');
+            const teamCamera = document.getElementById('team-camera');
+            const bioContainer = document.getElementById('bio-container');
+            const bioName = document.getElementById('bio-name');
+            const bioRole = document.getElementById('bio-role');
+            // const bioImage = document.getElementById('bio-image'); // Removed
+            const vignette = document.getElementById('vignette');
+            const popoutLayer = document.getElementById('popout-layer');
+
+            // Team Data
+            // Reduced Scale even more (1.6) for very subtle movement
+            // Coordinates tightened to center (avoid edges)
+            // Team Data
+            // Reduced Scale even more (1.6) for very subtle movement
+            // Coordinates tightened to center (avoid edges)
+            const teamMembers = [
+                { name: "Nijeesh NJ", role: "Frontend Lead", x: 35, y: 40, scale: 1.6, image: "images/nijeesh.png" },
+                { name: "Saravanan PV", role: "Backend Architect", x: 50, y: 30, scale: 1.6, image: "images/saravanan.png" },
+                { name: "Naveen", role: "Full Stack", x: 65, y: 45, scale: 1.6, image: "images/naveen.png" },
+                { name: "Himavath Reddy", role: "AI Engineer", x: 40, y: 55, scale: 1.6, image: "images/hima.png" },
+                { name: "Oswald Shilo", role: "Designer", x: 60, y: 35, scale: 1.6, image: "images/shilo.png" }
+            ];
+
+            // Initialize Pop-out Images
+            teamMembers.forEach((member, index) => {
+                const img = document.createElement('img');
+                img.src = member.image;
+                img.classList.add('popout-img');
+                img.style.left = `${member.x}%`;
+                img.style.top = `${member.y}%`;
+                img.id = `popout-${index}`;
+                popoutLayer.appendChild(img);
+            });
+
+            const handleTeamScroll = () => {
+                if (!teamTrack) return;
+                const rect = teamTrack.getBoundingClientRect();
+                const viewHeight = window.innerHeight;
+                const trackHeight = teamTrack.offsetHeight;
+
+                // Calculate progress within the track
+                let distance = -rect.top;
+                const maxDistance = trackHeight - viewHeight;
+                let progress = Math.min(Math.max(distance / maxDistance, 0), 1);
+
+                // Define Stages
+                // 0.00 - 0.15: Zoom In from Full Center (50,50) to Person 1
+                // 0.15 - 0.85: Pan through team
+                // 0.85 - 1.00: Return to Center
+
+                let targetX = 50; // Default Center
+                let targetY = 50; // Default Center
+                let targetScale = 1;
+                let activeMember = null;
+
+                // Smoother easing function
+                const easeInOut = t => t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+
+                if (progress < 0.15) {
+                    // Stage 1: Entrance Zoom
+                    // From (50,50) to teamMembers[0]
+                    const p = easeInOut(progress / 0.15); // 0 to 1
+
+                    const startX = 50;
+                    const startY = 50;
+                    const endX = teamMembers[0].x;
+                    const endY = teamMembers[0].y;
+
+                    targetScale = 1 + (p * (teamMembers[0].scale - 1));
+                    targetX = startX + (endX - startX) * p;
+                    targetY = startY + (endY - startY) * p;
+
+                    // Show First Person earlier (starting at 60% of zoom in)
+                    if (p > 0.6) activeMember = teamMembers[0];
+
+                } else if (progress >= 0.15 && progress < 0.9) {
+                    // Stage 2: Pan through members
+                    const segmentProgress = (progress - 0.15) / 0.75;
+                    const totalSegments = teamMembers.length - 1;
+
+                    const rawIndex = segmentProgress * totalSegments;
+                    const currentIndex = Math.floor(rawIndex);
+                    const nextIndex = Math.min(currentIndex + 1, totalSegments);
+                    let localProgress = rawIndex - currentIndex; // 0 to 1 within segment
+
+                    // Apply easing to the pan
+                    localProgress = easeInOut(localProgress);
+
+                    const current = teamMembers[currentIndex];
+                    const next = teamMembers[nextIndex];
+
+                    // Interpolate X, Y, Scale
+                    targetX = current.x + (next.x - current.x) * localProgress;
+                    targetY = current.y + (next.y - current.y) * localProgress;
+                    targetScale = current.scale;
+
+                    // Widen the "active" window to prevent skipping
+                    if (localProgress < 0.45) {
+                        activeMember = current;
+                    } else if (localProgress > 0.55) {
+                        activeMember = next;
+                    } else {
+                        activeMember = null; // Short transition gap
+                    }
+
+                } else {
+                    // Stage 3: Return to Center
+                    const p = (progress - 0.9) / 0.1; // 0 to 1
+                    const last = teamMembers[teamMembers.length - 1];
+                    const endX = 50;
+                    const endY = 50;
+
+                    // Zoom back to 1
+                    targetScale = last.scale - (p * (last.scale - 1));
+                    // Move back to center
+                    targetX = last.x + (endX - last.x) * p;
+                    targetY = last.y + (endY - last.y) * p;
+
+                    // Keep Last Person visible for first half of exit zoom
+                    if (p < 0.5) activeMember = last;
+                    else activeMember = null;
+                }
+
+                // Apply Transform
+                // Center calculation: 50 - (target * scale)
+                const moveX_centered = 50 - (targetX * targetScale);
+                const moveY_centered = 50 - (targetY * targetScale);
+
+                teamCamera.style.transform = `translate3d(${moveX_centered}%, ${moveY_centered}%, 0) scale(${targetScale})`;
+
+                // Update UI
+                if (activeMember) {
+                    // Highlight Pop-out
+                    const activeIndex = teamMembers.indexOf(activeMember);
+                    document.querySelectorAll('.popout-img').forEach((img, idx) => {
+                        if (idx === activeIndex) img.classList.add('active');
+                        else img.classList.remove('active');
+                    });
+
+                    if (bioName.innerText !== activeMember.name) {
+                        bioContainer.classList.add('opacity-0', 'translate-y-8');
+                        if (!bioContainer.dataset.pending) {
+                            bioContainer.dataset = { pending: "true" };
+                            setTimeout(() => {
+                                bioName.innerText = activeMember.name;
+                                bioRole.innerText = activeMember.role;
+                                // if (bioImage) bioImage.src = activeMember.image; // Removed
+                                bioContainer.classList.remove('opacity-0', 'translate-y-8');
+                                delete bioContainer.dataset.pending;
+                            }, 300);
+                        }
+                    } else {
+                        // Same person, ensure visible
+                        if (bioContainer.classList.contains('opacity-0') && !bioContainer.dataset.pending) {
+                            bioContainer.classList.remove('opacity-0', 'translate-y-8');
+                        }
+                    }
+                    vignette.classList.remove('opacity-0');
+                } else {
+                    // Hide all popouts
+                    document.querySelectorAll('.popout-img').forEach(img => img.classList.remove('active'));
+
+                    bioContainer.classList.add('opacity-0', 'translate-y-8');
+                    // vignette.classList.add('opacity-0');
+                }
+
+            };
+
+            window.addEventListener('scroll', handleTeamScroll, { passive: true });
+
+            // --- FOOTER PARADE ANIMATION ---
+            const initParade = () => {
+                const group = document.getElementById('parade-group');
+                if (!group) return;
+                let x = -600;
+                const animate = () => {
+                    x += 1.5;
+                    if (x > window.innerWidth + 100) x = -800;
+                    group.style.left = x + 'px';
+                    requestAnimationFrame(animate);
+                };
+                animate();
+            };
+            initParade();
+
+        });
+    </script>
+</body>
+
+</html>
