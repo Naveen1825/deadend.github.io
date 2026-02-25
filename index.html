@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DeadEnd Engineers | Story</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <!-- Imports from video_scroll_demo.html -->
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;500&display=swap"
         rel="stylesheet">
@@ -450,7 +451,7 @@
             color: #666;
         }
 
-        .github-btn {
+        .url-btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -463,9 +464,28 @@
             transition: all 0.2s;
         }
 
-        .github-btn:hover {
+        .url-btn:hover {
             background: #ff6600;
             color: #000;
+        }
+
+        .url-site-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #ffffff;
+            color: #000;
+            border: #000 solid 1px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .url-site-btn:hover {
+            background: #000000;
+            color: #ffffff;
         }
 
         .tc-header {
@@ -798,12 +818,12 @@
             <a href="#projects">Works</a>
             <a href="#footer">Contact</a>
         </div>
-        <a href="mailto:12ocaffeine@gmail.com" class="nav-cta">
+        <button onclick="openContactPopup()" class="nav-cta">
             Let's Talk
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                 <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-        </a>
+        </button>
     </nav>
 
     <!-- 1. HERO SCROLL TRACK (COPIED EXACTLY) -->
@@ -935,7 +955,7 @@
                                 </div>
                                 
                                 <div>
-                                    <a href="#" class="github-btn">
+                                    <a href="#" class="url-btn">
                                         View Source
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                             <path
@@ -943,8 +963,8 @@
                                         </svg>
 
                                     </a>
-                                    <a href="#" class="github-btn">
-                                        Visit site
+                                    <a href="#" class="url-site-btn">
+                                        visit our product
                                         <svg width="16" height="16" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10">
                                             <path d="M84 128.6H54.6C36.6 128.6 22 114 22 96c0-9 3.7-17.2 9.6-23.1 5.9-5.9 14.1-9.6 23.1-9.6H84m24 65.3h29.4c9 0 17.2-3.7 23.1-9.6 5.9-5.9 9.6-14.1 9.6-23.1 0-18-14.6-32.6-32.6-32.6H108M67.9 96h56.2" />
                                         </svg>
@@ -1008,7 +1028,7 @@
                                     <span class="tag-pill">CUDA</span>
                                 </div>
                                 <div>
-                                    <a href="#" class="github-btn">
+                                    <a href="#" class="url-btn">
                                         View Source
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                             <path
@@ -1016,8 +1036,8 @@
                                         </svg>
 
                                     </a>
-                                    <a href="#" class="github-btn">
-                                        Visit site
+                                    <a href="#" class="url-site-btn">
+                                        visit our product
                                         <svg width="16" height="16" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10">
                                             <path d="M84 128.6H54.6C36.6 128.6 22 114 22 96c0-9 3.7-17.2 9.6-23.1 5.9-5.9 14.1-9.6 23.1-9.6H84m24 65.3h29.4c9 0 17.2-3.7 23.1-9.6 5.9-5.9 9.6-14.1 9.6-23.1 0-18-14.6-32.6-32.6-32.6H108M67.9 96h56.2" />
                                         </svg>
@@ -1082,7 +1102,7 @@
                                     <span class="tag-pill">Graph DB</span>
                                 </div>
                                 <div>
-                                    <a href="#" class="github-btn">
+                                    <a href="#" class="url-btn">
                                         View Source
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                             <path
@@ -1090,8 +1110,8 @@
                                         </svg>
 
                                     </a>
-                                    <a href="#" class="github-btn">
-                                        Visit site
+                                    <a href="#" class="url-site-btn">
+                                        visit our product
                                         <svg width="16" height="16" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10">
                                             <path d="M84 128.6H54.6C36.6 128.6 22 114 22 96c0-9 3.7-17.2 9.6-23.1 5.9-5.9 14.1-9.6 23.1-9.6H84m24 65.3h29.4c9 0 17.2-3.7 23.1-9.6 5.9-5.9 9.6-14.1 9.6-23.1 0-18-14.6-32.6-32.6-32.6H108M67.9 96h56.2" />
                                         </svg>
@@ -1157,7 +1177,7 @@
                                     <span class="tag-pill">WebGL</span>
                                 </div>
                                 <div>
-                                    <a href="#" class="github-btn">
+                                    <a href="#" class="url-btn">
                                         View Source
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                             <path
@@ -1165,8 +1185,8 @@
                                         </svg>
 
                                     </a>
-                                    <a href="#" class="github-btn">
-                                        Visit site
+                                    <a href="#" class="url-site-btn">
+                                        visit our product
                                         <svg width="16" height="16" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10">
                                             <path d="M84 128.6H54.6C36.6 128.6 22 114 22 96c0-9 3.7-17.2 9.6-23.1 5.9-5.9 14.1-9.6 23.1-9.6H84m24 65.3h29.4c9 0 17.2-3.7 23.1-9.6 5.9-5.9 9.6-14.1 9.6-23.1 0-18-14.6-32.6-32.6-32.6H108M67.9 96h56.2" />
                                         </svg>
@@ -1232,7 +1252,7 @@
                                     <span class="tag-pill">WebGL</span>
                                 </div>
                                 <div>
-                                    <a href="#" class="github-btn">
+                                    <a href="#" class="url-btn">
                                         View Source
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                             <path
@@ -1240,8 +1260,8 @@
                                         </svg>
 
                                     </a>
-                                    <a href="#" class="github-btn">
-                                        Visit site
+                                    <a href="#" class="url-site-btn">
+                                        visit our product
                                         <svg width="16" height="16" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10">
                                             <path d="M84 128.6H54.6C36.6 128.6 22 114 22 96c0-9 3.7-17.2 9.6-23.1 5.9-5.9 14.1-9.6 23.1-9.6H84m24 65.3h29.4c9 0 17.2-3.7 23.1-9.6 5.9-5.9 9.6-14.1 9.6-23.1 0-18-14.6-32.6-32.6-32.6H108M67.9 96h56.2" />
                                         </svg>
@@ -1369,17 +1389,81 @@
 
         <div class="px-6 mb-12">
             <h5 class="text-sm font-bold uppercase tracking-widest mb-6 text-gray-500">Contact</h5>
-            <a href="mailto:12ocaffeine@gmail.com"
-                class="text-2xl md:text-3xl text-black hover:text-gray-500 transition-colors">12ocaffeine@gmail.com</a>
+            <a href="mailto:12ocaffeine@gmail.com" class="text-2xl md:text-3xl text-black hover:text-gray-500 transition-colors">12ocaffeine@gmail.com</a>
         </div>
         <div class="w-full text-center py-4 border-t border-gray-200">
-            <p class="text-[10px] text-gray-400 uppercase tracking-widest">© 2026 DeadEnd Engineers</p>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest"> 2026 DeadEnd Engineers</p>
         </div>
     </footer>
 
+    <!-- CONTACT POPUP MODAL -->
+    <div id="contactPopup" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden opacity-0 transition-all duration-300">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white border border-black rounded-none max-w-md w-full transform scale-95 transition-all duration-300" id="popupContent">
+                <!-- Header -->
+                <div class="border-b border-gray-200 p-6">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold font-heading">Let's Work Together</h3>
+                        <button onclick="closeContactPopup()" class="text-gray-400 hover:text-black transition-colors">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 6L6 18M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Tell us about your project and we'll get back to you.</p>
+                </div>
+                
+                <!-- Form -->
+                <form id="contactForm" class="p-6 space-y-4">
+                    <div>
+                        <label for="name" class="block text-sm font-mono uppercase tracking-widest text-gray-700 mb-2">Name *</label>
+                        <input type="text" id="name" name="name" required 
+                               class="w-full px-3 py-2 border border-gray-300 focus:border-black focus:outline-none transition-colors font-mono text-sm"
+                               placeholder="John Doe">
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-mono uppercase tracking-widest text-gray-700 mb-2">Email *</label>
+                        <input type="email" id="email" name="email" required 
+                               class="w-full px-3 py-2 border border-gray-300 focus:border-black focus:outline-none transition-colors font-mono text-sm"
+                               placeholder="john@example.com">
+                    </div>
+                    
+                    <div>
+                        <label for="problemTitle" class="block text-sm font-mono uppercase tracking-widest text-gray-700 mb-2">Problem Title *</label>
+                        <input type="text" id="problemTitle" name="problemTitle" required 
+                               class="w-full px-3 py-2 border border-gray-300 focus:border-black focus:outline-none transition-colors font-mono text-sm"
+                               placeholder="E-commerce Platform Development">
+                    </div>
+                    
+                    <div>
+                        <label for="requirements" class="block text-sm font-mono uppercase tracking-widest text-gray-700 mb-2">Requirements *</label>
+                        <textarea id="requirements" name="requirements" rows="4" required 
+                                  class="w-full px-3 py-2 border border-gray-300 focus:border-black focus:outline-none transition-colors font-mono text-sm resize-none"
+                                  placeholder="Tell us about your project — goals, timeline, preferred technologies. Attach documents using a Google Drive link."></textarea>
+                    </div>
+                    
+                    <div class="flex gap-3 pt-4">
+                        <button type="submit" 
+                                class="flex-1 bg-black text-white font-mono text-sm uppercase tracking-widest py-3 px-6 url-btn">
+                            Send Message
+                        </button>
+                        <button type="button" onclick="closeContactPopup()" 
+                                class="flex-1 border border-black text-black font-mono text-sm uppercase tracking-widest py-3 px-6 hover:bg-black hover:text-white transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+        // Initialize EmailJS
+        (function() {
+            emailjs.init("ZGcCK0izmNn-hKIDW"); // Replace with your EmailJS public key
+        })();
 
             // --- HERO SCROLL ANIMATION (BANNER MODE) ---
             const setupScrollAnimation = (trackId, containerId, config = {}) => {
@@ -1514,7 +1598,7 @@
                 },
                 { 
                     name: "Himavath", 
-                    role: "ML Engineer + Investor", 
+                    role: "ML Engineer + Frontend", 
                     x: 40, y: 55, scale: 1.6, 
                     image: "images/hima.png",
                     coreSystem: "// QUANTUM CORE SYSTEMS\nAlgorithmic trading models\nRisk assessment frameworks\nPortfolio optimization engines"
@@ -1691,6 +1775,154 @@
             };
             initParade();
 
+        });
+
+        // --- CONTACT POPUP FUNCTIONS ---
+        function openContactPopup() {
+            const popup = document.getElementById('contactPopup');
+            const content = document.getElementById('popupContent');
+            
+            popup.classList.remove('hidden');
+            setTimeout(() => {
+                popup.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+            
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeContactPopup() {
+            const popup = document.getElementById('contactPopup');
+            const content = document.getElementById('popupContent');
+            
+            popup.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                popup.classList.add('hidden');
+                // Reset body scroll
+                document.body.style.overflow = '';
+                // Reset form
+                document.getElementById('contactForm').reset();
+            }, 300);
+        }
+        
+        // Handle form submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Prevent multiple submissions
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            if (submitButton.disabled) {
+                return; // Already submitting
+            }
+            
+            // Disable submit button and show loading state
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+            
+            // Get form data
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const problemTitle = document.getElementById('problemTitle').value;
+            const requirements = document.getElementById('requirements').value;
+            
+            // Email parameters for EmailJS
+            const templateParams = {
+                to_email: '12ocaffeine@gmail.com',
+                cc_emails: 'naveenkanthan8@gmail.com,naveenkanthan12@gmail.com',
+                name: name,
+                email: email,
+                title: problemTitle,
+                message: requirements,
+                time: new Date().toLocaleString()
+            };
+            
+            // Send email using EmailJS
+            emailjs.send('service_jan6smc', 'template_41gw4mo', templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    // Show success message
+                    showNotification('Message sent successfully! We\'ll get back to you soon.', 'success');
+                    // Close popup after a short delay
+                    
+                    closeContactPopup();
+                    setTimeout(() => {
+                        // Reset button state after popup closes
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Send Message';
+                    }, 2000);
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    // Show error message
+                    showNotification('Failed to send message. Please try again.', 'error');
+                    // Re-enable button on error
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Send Message';
+                });
+        });
+        
+        // Show notification function
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                notification.className += ' bg-green-500 text-white';
+            } else {
+                notification.className += ' bg-red-500 text-white';
+            }
+            
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        ${type === 'success' 
+                            ? '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 00016zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>'
+                            : '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 00016zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>'
+                        }
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium">${message}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Add to page
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 5000);
+        }
+        
+        // Close popup when clicking outside
+        document.getElementById('contactPopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeContactPopup();
+            }
+        });
+        
+        // Close popup with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const popup = document.getElementById('contactPopup');
+                if (!popup.classList.contains('hidden')) {
+                    closeContactPopup();
+                }
+            }
         });
     </script>
 </body>
